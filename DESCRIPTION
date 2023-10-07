@@ -1,9 +1,9 @@
 Package: seaR
-Title: What the Package Does (One Line, Title Case)
+Title: Structural Event Analysis
 Version: 0.0.0.9000
 Authors@R: 
-    person("andrés", "castro araújo", , "acastroaraujo@gmail.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+    person("Andrés", "Castro Araújo", , "acastroaraujo@gmail.com", role = c("aut", "cre"))
+Description: Implements Martin Ruef's Structural Event Analysis
 License: MIT + file LICENSE
 Imports: 
     arrangements,
@@ -13,3 +13,5 @@ Imports:
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+URL: https://github.com/acastroaraujo/seaR
+BugReports: https://github.com/acastroaraujo/seaR/issues
