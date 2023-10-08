@@ -3,7 +3,7 @@ Title: Structural Event Analysis
 Version: 0.0.0.9000
 Authors@R: 
     person("Andrés", "Castro Araújo", , "acastroaraujo@gmail.com", role = c("aut", "cre"))
-Description: Implements Martin Ruef's Structural Event Analysis
+Description: Implements Martin Ruef's Structural Event Analysis.
 License: MIT + file LICENSE
 Imports: 
     arrangements,

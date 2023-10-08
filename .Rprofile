@@ -4,7 +4,7 @@ if (interactive()) {
 }
 
 options(
-  usethis.full_name = "andrés castro araújo",
+  usethis.full_name = "Andrés Castro Araújo",
   usethis.description = list(
     `Authors@R` = 'person(
     "andrés", "castro araújo",

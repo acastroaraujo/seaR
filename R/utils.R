@@ -42,6 +42,7 @@ risk_set_size <- function(size, ...) {
   out <- purrr::map_dbl(size, \(k) choose(k + length(identities) - 1L, k)) |>
     purrr::set_names(size)
 
+  message("Total: ", format(sum(out), big.mark = ","))
   return(out)
 }
 

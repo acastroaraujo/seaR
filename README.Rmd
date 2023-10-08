@@ -1,0 +1,59 @@
+---
+output: github_document
+bibliography: references.bib
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# seaR
+
+<!-- badges: start -->
+
+<!-- badges: end -->
+
+Structural Event Analysis [@ruef2002; @ruef2003]
+
+## Installation
+
+You can install the development version of seaR from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("acastroaraujo/seaR")
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+```{r example}
+library(seaR)
+
+gender <- c("F", "M")
+occupation <- c("P", "A", "O", "U")
+risk_set_size(1:8, gender, occupation)
+
+geography <- c("S", "N")
+risk_set_size(1:8, gender, occupation, geography)
+```
+
+And:
+
+```{r}
+grid <- risk_set(1:8, gender, occupation)
+glimpse(grid)
+
+i <- sample(nrow(grid), size = 10)
+grid[i, ]
+```
+
+## References
