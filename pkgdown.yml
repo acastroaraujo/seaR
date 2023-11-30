@@ -2,7 +2,7 @@ pandoc: 2.19.2
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles: {}
-last_built: 2023-11-30T01:04Z
+last_built: 2023-11-30T01:18Z
 urls:
   reference: https://acastroaraujo.github.io/seaR/reference
   article: https://acastroaraujo.github.io/seaR/articles
