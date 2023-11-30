@@ -1,6 +1,8 @@
 ---
 output: github_document
 bibliography: references.bib
+nocite: |
+  @ruef2002, @ruef2003
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -18,9 +20,11 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 
+[![R-CMD-check](https://github.com/acastroaraujo/seaR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/acastroaraujo/seaR/actions/workflows/R-CMD-check.yaml)
+
 <!-- badges: end -->
 
-Structural Event Analysis [@ruef2002; @ruef2003]
+**Structural Event Analysis**
 
 ## Installation
 
@@ -55,7 +59,5 @@ glimpse(grid)
 i <- sample(nrow(grid), size = 10)
 grid[i, ]
 ```
-
-a
 
 ## References

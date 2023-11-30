@@ -4,9 +4,12 @@
 # seaR
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/acastroaraujo/seaR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/acastroaraujo/seaR/actions/workflows/R-CMD-check.yaml)
+
 <!-- badges: end -->
 
-Structural Event Analysis (Ruef 2002; Ruef, Aldrich, and Carter 2003)
+**Structural Event Analysis**
 
 ## Installation
 
@@ -54,19 +57,17 @@ grid[i, ]
 #> # A tibble: 10 × 2
 #>    id                       size
 #>    <chr>                   <int>
-#>  1 FP|FP|FP|FP|MP|MP|FU|MU     8
-#>  2 FP|MP|MP|MP                 4
-#>  3 FP|FP|FA|FA|FO|MO|FU|MU     8
-#>  4 MP|MP|MP|MP|MA|FO|FO        7
-#>  5 FP|MP|MO|MO|FU|MU|MU        7
-#>  6 FP|MA|MA|FO|FO|FO|FO|MU     8
-#>  7 FP|FP|FP|FP|FA|MO|FU|MU     8
-#>  8 FA|FA|FA|FA|FA|MO|MO|MO     8
-#>  9 FP|FP|FP|FA|MA|MO|MO|MU     8
-#> 10 FP|MP|FA|FU|FU|FU           6
+#>  1 MP|MP|FA|MA|MA|FO|FU|FU     8
+#>  2 MP|FA|MA|FO|FO|FO|MO|MO     8
+#>  3 MA|FO|MO|FU|MU|MU|MU        7
+#>  4 MP|MP|FA|MA|FO|MO|MO        7
+#>  5 MP|MP|MP|MA|FO|MO|MO        7
+#>  6 FP|MP|MP|FA|MO|FU|MU        7
+#>  7 FP|MP|FU|MU|MU              5
+#>  8 MP|MP|MP|FO|MO|MO|MU|MU     8
+#>  9 FP|FP|FO|MU                 4
+#> 10 FP|FP|FP|FA|FA|FA|FA|FO     8
 ```
-
-a
 
 ## References
 

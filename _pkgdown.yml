@@ -1,4 +1,8 @@
 url: https://acastroaraujo.github.io/seaR/
 template:
   bootstrap: 5
+  bslib:
+    base_font: {google: "Crimson Text"}
+    heading_font: {google: "IM Fell DW Pica SC"}
+    code_font: {google: "JetBrains Mono"}
 
