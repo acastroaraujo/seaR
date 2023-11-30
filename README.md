@@ -54,17 +54,19 @@ grid[i, ]
 #> # A tibble: 10 × 2
 #>    id                       size
 #>    <chr>                   <int>
-#>  1 FP|MP|FA|FA|FO|FO|FU|MU     8
-#>  2 MP|MP|MP|FU|FU|MU|MU        7
-#>  3 FP|FA|MO|MO|MO|MO|MO|FU     8
-#>  4 FU|FU|FU|FU|MU|MU           6
-#>  5 FP|FP|FP|MP|FA|FA|FO|MU     8
-#>  6 FA|FA|FO|FO|MO|MO|MO|MU     8
-#>  7 FP|MA|MA|MA|MO|MO|MO|MU     8
-#>  8 FP|FP|FP|FP|FA|MA|FO|MU     8
-#>  9 FP|FP|MP|MP|MP              5
-#> 10 FP|MP|MA|MA|MA|FO|FO|MU     8
+#>  1 FP|FP|FP|FP|MP|MP|FU|MU     8
+#>  2 FP|MP|MP|MP                 4
+#>  3 FP|FP|FA|FA|FO|MO|FU|MU     8
+#>  4 MP|MP|MP|MP|MA|FO|FO        7
+#>  5 FP|MP|MO|MO|FU|MU|MU        7
+#>  6 FP|MA|MA|FO|FO|FO|FO|MU     8
+#>  7 FP|FP|FP|FP|FA|MO|FU|MU     8
+#>  8 FA|FA|FA|FA|FA|MO|MO|MO     8
+#>  9 FP|FP|FP|FA|MA|MO|MO|MU     8
+#> 10 FP|MP|FA|FU|FU|FU           6
 ```
+
+a
 
 ## References
 

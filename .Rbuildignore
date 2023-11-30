@@ -5,3 +5,6 @@
 ^references.bib$
 ^README\.Rmd$
 
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
