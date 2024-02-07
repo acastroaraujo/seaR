@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(seaR)
 
-# Custom Functions for this analysis
+# custom Functions for this analysis
 
 is_homophily <- function(x) {
   ## 1 if group (size > 1) is homophilous
@@ -27,6 +27,8 @@ is_homophily <- function(x) {
 ```
 
 ## Data
+
+To do: Add origin story of the data.
 
 | Variable    | Type      | Description                                                                                                                                                                                                                                                              |
 |---------------|---------------|------------------------------------------|
@@ -41,8 +43,6 @@ is_homophily <- function(x) {
 | `spouse`    | numeric   | indicator; are there any spouses/cohabiting partners among the founding team members?                                                                                                                                                                                    |
 | `autonomy`  | numeric   | An indicator which assesses the role of institutional owners and sponsors. The values are (1) no outside influence; (2) independent startup with institutional owners; (3) franchise or multilevel marketing enterprise; and (4) startup sponsored by existing business. |
 
-Origin story of the data
-
 ```{r}
 dplyr::glimpse(teams)
 ```
@@ -53,6 +53,8 @@ dplyr::glimpse(teams)
 library(tidyverse)
 theme_set(theme_light(base_family = "Optima"))
 ```
+
+Step 1. Get the original data into the right shape (including the creation of an `.id` variable)
 
 ```{r}
 teams <- teams |> 
@@ -71,12 +73,17 @@ d <- teams |>
 print(d, n = Inf)
 ```
 
-### Merging
+Step 2. Get the risk set.
 
 ```{r}
 gender <- c("M", "F")
 rs <- risk_set(1:5, gender) 
+rs
+```
 
+The risk set and the original
+
+```{r}
 d <- rs |> 
   full_join(d) |> 
   mutate(n = replace_na(n, 0L)) 
@@ -296,4 +303,3 @@ d |>
 Re-do without rounding up.
 
 Multiply the margins (as if independent).
-

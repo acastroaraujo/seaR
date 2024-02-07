@@ -15,8 +15,14 @@ The purpose of this notebook is to proof the importance of this method by testin
 ```{r, message=FALSE}
 library(seaR)
 #load_all()
+
+## data wrangling + plotting packages
 library(tidyverse)
 theme_set(theme_linedraw(base_family = "Avenir Next Condensed"))
+
+## tables packages
+library(modelsummary)
+library(gt)
 ```
 
 ## Simple Random Mixing Model
