@@ -2,6 +2,7 @@
 title: "Tutorial"
 editor_options: 
   chunk_output_type: console
+bibliography: references.bib
 ---
 
 ```{r, include = FALSE}
@@ -54,7 +55,9 @@ library(tidyverse)
 theme_set(theme_light(base_family = "Optima"))
 ```
 
-Step 1. Get the original data into the right shape (including the creation of an `.id` variable)
+Step 1. Get the original data into the right shape (including the creation of an `.id` variable).
+
+*Note the use of survey weights.*
 
 ```{r}
 teams <- teams |> 
@@ -68,7 +71,7 @@ teams <- teams |>
   relocate(.id)
 
 d <- teams |> 
-  count(.id, allfemale, allmale, wt = wtw1) 
+  count(.id, spouse, wt = wtw1) 
 
 print(d, n = Inf)
 ```
@@ -81,47 +84,98 @@ rs <- risk_set(1:5, gender)
 rs
 ```
 
-The risk set and the original
+The risk set is half the size as it should be because we are interested in whether there are spouses present in some of these groups or not.
+
+```{r}
+rs <- rs |> 
+  mutate(spouse = list(c(0L, 1L))) |> 
+  unnest(spouse)
+
+glimpse(rs)
+```
+
+Step 3. Remove structural zeroes (i.e., groups of size 1 with spouse = 1).
+
+```{r}
+rs <- rs |> 
+  filter(!(.size == 1 & spouse == 1)) 
+```
+
+Step 4. Merge the risk set with real data.
+
+The risk set has 38 structural events, but we only have 28 of them in our data.
+
+The idea is to merge them and have the missing values of `n` replaced with zeroes.
 
 ```{r}
 d <- rs |> 
   full_join(d) |> 
   mutate(n = replace_na(n, 0L)) 
-
-print(d, n = Inf)
 ```
+
+Step 5. Add additional `homophily` and `size_one` variables.
+
+I also created a `y` variable that rounds up the weighted counts (`n`).
 
 ```{r}
 d <- d |> 
   mutate(homophily = is_homophily(.id)) |> 
-  mutate(y = ceiling(n)) |>
+  mutate(y = round(n)) |>
   mutate(size_one = as.integer(.size == 1L)) 
 
 d
 ```
 
+Step 6. Calculate event probabilities
+
 ```{r}
-d$b <- event_probs(d, get_identities(rs))
-attr(d$b, "identities_prob") ## get_identity_probs(d, c("M", "F"))
+d$lp <- event_probs(d, identities = c("M", "F"), log = TRUE)
+attr(d$lp, "identities_prob") 
+```
 
-d |> 
-  group_by(.size) |> 
-  summarize(b = sum(b))
+Step 7. The probabilities are not quite right because I have not taken into account the probabilities of there being a spouse or not in the group.
 
-d |> 
-  mutate(expected = b * sum(n), .by = .size) |> 
-  select(.id, n, expected) |> 
-  gt::gt(rowname_col = ".id") |> 
-  gt::fmt_number(decimals = 2) |> 
-  gt::opt_table_font("Optima") 
+I haven't figured out a way to do this properly, but there should be a way to modify `event_probs` in the future to deal with these!
 
+```{r}
 d <- d |> 
-  mutate(homophily = is_homophily(.id)) |> 
+  group_by(.size) |>
+  mutate(lp = unclass(lp)) |> 
+  mutate(lp = case_when(
+    .size == 1 ~ lp,
+    .size > 1 & spouse == 0 ~ lp + log(sum((spouse == 0) * n ) / sum(n)),
+    .size > 1 & spouse == 1 ~ lp + log(sum((spouse == 1) * n ) / sum(n))
+  )) |> 
+  ungroup()
+
+d |> ## sanity check, all conditional probabilities should sum up to one
+  summarize(p = exp(log_sum_exp(lp)), .by = .size) 
+```
+
+### Expected counts
+
+```{r}
+d |> 
+  mutate(expected = exp(lp) * sum(y), .by = .size) |> 
+  select(.id, spouse, y, expected) |> 
+  arrange(spouse) |> 
+  gt::gt(rowname_col = ".id") |> 
+  gt::fmt_number(decimals = 1) |> 
+  gt::opt_table_font("Optima") 
+```
+
+### Models 1-4
+
+The following code sort-of-replicates Table 4 in @ruef2003 [pp. 209]. They account for teams of size 4 or 5 with two spouses, which adds 11 more structural events.
+
+```{r}
+d <- d |> 
   mutate(size_category = factor(.size))
 
-mod1 <- glm(y ~ size_category, data = d, family = poisson("log"), offset = log(b))
+mod1 <- glm(y ~ size_category, data = d, family = poisson("log"), offset = lp)
 mod2 <- update(mod1, y ~ .size)
 mod3 <- update(mod1, y ~ size_one + .size + homophily)
+mod4 <- update(mod1, y ~ size_one + .size + homophily*spouse)
 ```
 
 ```{r}
@@ -133,173 +187,16 @@ cm <- c(
   "size_category3" = "Size Category [3]",
   "size_category4" = "Size Category [4]",
   "size_category5" = "Size Category [5]",
-  "homophily" = "Gender Homophily"
+  "homophily" = "Gender Homophily",
+  "homophily:spouse" = "Partners/spouse × \nGender Homophily"
 )
 
 modelsummary::msummary(
-  list("Model 1" = mod1, "Model 2" = mod2, "Model 3" = mod3), 
+  list("Model 1" = mod1, "Model 2" = mod2, "Model 3" = mod3, "Model 4" = mod4), 
   coef_map = cm,
   stars = TRUE,
+  gof_map = c("nobs", "aic", "bic"),
   output = "gt"
 ) |> gt::opt_table_font("Optima")
 ```
 
-### Homophily
-
-```{r, eval=FALSE}
-rs <- rs |> 
-  mutate(spouse = list(c(0L, 1L))) |> 
-  unnest(spouse)
-
-rs
-
-d <- teams |> 
-  count(.id, spouse, wt = wtw1) 
-
-d <- d |> 
-  full_join(rs) |> 
-  mutate(n = replace_na(n, 0L)) |> 
-  ## structural zero!
-  filter(!(.size == 1 & spouse == 1)) |> 
-  arrange(.size)
-  
-d
-
-## YOU ARE HERE. THE PROBLEM IS THAT YOU NEED TO Multiply the margins (as if independent). Do a simple if-else
-
-d <- d |> 
-  mutate(M = str_count(id, "M")) |> 
-  mutate(F = str_count(id, "F")) 
-
-d
-
-probs <- d |> 
-  summarize(F = sum(n*F) / sum(n*size), M = sum(n*M) / sum(n*size)) |>
-  unlist()
-
-probs
-
-d <- d |> 
-  rowwise() |> 
-  mutate(b = dmultinom(c(M, F), prob = c(probs[["M"]], probs[["F"]]))) |> 
-  ungroup()
-
-d
-
-d <- d |> 
-  mutate(homophily = is_homophily(id)) |> 
-  mutate(y = ceiling(n)) |>
-  mutate(size_one = as.integer(size == 1L)) |> 
-  mutate(size_category = factor(size))
-
-d
-
-attr(d$size_category, "label") <- "Size Category"
-attr(d$size, "label") <- "Team Size"
-attr(d$homophily, "label") <- "Gender Homophily"
-attr(d$size_one, "label") <- "Size Category[1]"
-
-mod4 <- glm(y ~ size_one + size + homophily + spouse:homophily, data = d, family = poisson("log"), offset = log(b))
-
-modelsummary::msummary(
-  list("Model 1" = mod1, "Model 2" = mod2, "Model 3" = mod3, "Model 4" = mod4),
-  stars = TRUE,
-  output = "gt"
-) |> gt::opt_table_font("Optima")
-```
-
-### Institutional Owners
-
-Greetings, Andres.
-
-I'm sending along the revised data set on founding teams, as promised.
-
-My recommendation would be that you start by working with the spouse indicator to try to reproduce the estimates in the ASR paper, Table 4 (Models 4+5).
-
-Then you can try a very simple dichotomous version of the autonomy indicator (1 versus everything else). Eyeballing the descriptive statistics, I'm fairly certain that this will yield null results in terms of variation in gender diversity. That's partially due to the restrictive sample we're still using on this round (N=102 startups that have institutional backers, excluding those startups where majority ownership involves institutions). But it's also a pattern that may hold more generally. So, it'll be interesting to see if the models converge easily and how best to specify the interaction of gender diversity and institutional autonomy.
-
-Finally, you can play around a bit with a disaggregated version of the autonomy indicator. I think the real source of variation could be the franchises and sponsored businesses (3+4), where an existing organization has a serious stake in the appearance of their franchisee or spinoff. I'm not sure the same dynamic will hold for startups that simply involve banks or venture capital firms as institutional owners.
-
-```{r, eval=FALSE}
-
-gender <- c("F", "M")
-rs <- risk_set(1:5, gender) 
-
-rs <- rs |> ### replace code with expand grid
-  mutate(spouse = list(0:1)) |> 
-  unnest(spouse) |> 
-  mutate(outside_influence = list(0:1)) |> 
-  unnest(outside_influence)
-
-rs
-
-d <- teams |> 
-  mutate(outside_influence = as.integer(autonomy != 1)) |> 
-  count(id, spouse, outside_influence, wt = wtw1) 
-
-d <- d |> 
-  full_join(rs) |> 
-  mutate(n = replace_na(n, 0L)) |> 
-  filter(!(size == 1 & spouse == 1)) |> 
-  arrange(size, id, spouse, outside_influence)
-  
-d
-
-d <- d |> 
-  mutate(M = str_count(id, "M")) |> 
-  mutate(F = str_count(id, "F")) 
-
-d
-
-probs <- d |> 
-  summarize(F = sum(n*F) / sum(n*size), M = sum(n*M) / sum(n*size)) |>
-  unlist()
-
-probs
-
-d <- d |> 
-  rowwise() |> 
-  mutate(b = dmultinom(c(M, F), prob = c(probs[["M"]], probs[["F"]]))) |> 
-  ungroup()
-
-d
-
-d <- d |> 
-  mutate(homophily = is_homophily(id)) |> 
-  mutate(y = ceiling(n)) |>
-  mutate(size_one = as.integer(size == 1L)) 
-
-d
-
-mod5 <- glm(
-  formula = y ~ size_one + size + homophily + spouse + homophily:spouse, 
-  data = d, 
-  family = "poisson", 
-  offset = log(b)
-)
-
-summary(mod5)
-```
-
-```{r, eval=FALSE}
-
-d |> 
-  ggplot(aes(as.factor(outside_influence), n)) + 
-  stat_summary()
-
-d |> 
-  ggplot(aes(as.factor(outside_influence), n, color = factor(size))) + 
-  stat_summary(position = position_dodge(width = 1/2))
-
-d |> 
-  filter(n > 0) |> 
-  ggplot(aes(as.factor(outside_influence), n, color = factor(size))) + 
-  geom_text(aes(label = id), position = position_dodge(1/2), alpha = 1/2, size = 3) +
-  scale_y_log10() + 
-  facet_wrap(~spouse, labeller = label_both) 
-    
-```
-
-Re-do without rounding up.
-
-Multiply the margins (as if independent).

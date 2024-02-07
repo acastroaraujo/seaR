@@ -14,7 +14,6 @@ The purpose of this notebook is to proof the importance of this method by testin
 
 ```{r, message=FALSE}
 library(seaR)
-#load_all()
 
 ## data wrangling + plotting packages
 library(tidyverse)
@@ -344,7 +343,7 @@ modelsummary::msummary(
   models = list(m1, m2, m3, m4, m5), 
   stars = TRUE, 
   gof_map = c("nobs", "aic", "bic"),
-  notes = "Models 1-2 don't include offset term. Model 4 is correctly specified.", 
+  notes = "Models 1-2 don't include offset term. Model 5 is correctly specified.", 
   title = "Incomplete Risk Set (Missing Data) || NO OFFSET", 
   output = "gt"
 ) |> gt::opt_table_font("Avenir Next")
@@ -361,7 +360,7 @@ modelsummary::msummary(
   models = list(m1, m2, m3, m4, m5), 
   stars = TRUE, 
   gof_map = c("nobs", "aic", "bic"),
-  notes = "Models 1-2 don't include offset term. Model 4 is correctly specified.", 
+  notes = "Models 1-2 don't include offset term. Model 5 is correctly specified.", 
   title = "Incomplete Risk Set (Missing Data) || INCLUDING OFFSET", 
   output = "gt"
 ) |> gt::opt_table_font("Avenir Next")
@@ -382,7 +381,7 @@ modelsummary::msummary(
   models = list(m1, m2, m3, m4, m5), 
   stars = TRUE, 
   gof_map = c("nobs", "aic", "bic"),
-  notes = "Models 1-2 don't include offset term. Model 3 is correctly specified.", 
+  notes = "Models 1-2 don't include offset term. Model 5 is correctly specified.", 
   title = "Complete Risk Set", 
   output = "gt"
 ) |> gt::opt_table_font("Avenir Next")
@@ -392,4 +391,8 @@ modelsummary::msummary(
 
 -   *The standard errors are super small, which makes it suspicious to apply the statistical significance framework in this context.*
 
-## Massive 
+To do:
+
+-   Simulate a massive risk set (with millions of events)
+
+-   Use simulation to get real sampling distributions for coefficients and compare to the usual standard error.
