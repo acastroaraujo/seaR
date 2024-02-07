@@ -182,7 +182,8 @@ enterprise; and (4) startup sponsored by existing business.</td>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html" class="external-link">theme_set</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_light</a></span><span class="op">(</span>base_family <span class="op">=</span> <span class="st">"Optima"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Step 1. Get the original data into the right shape (including the
-creation of an <code>.id</code> variable)</p>
+creation of an <code>.id</code> variable).</p>
+<p><em>Note the use of survey weights.</em></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">teams</span> <span class="op">&lt;-</span> <span class="va">teams</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="co">## Replace gender role names with first letter (i.e., M, F, N)</span></span>
@@ -195,7 +196,7 @@ creation of an <code>.id</code> variable)</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/relocate.html" class="external-link">relocate</a></span><span class="op">(</span><span class="va">.id</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">d</span> <span class="op">&lt;-</span> <span class="va">teams</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">.id</span>, <span class="va">allfemale</span>, <span class="va">allmale</span>, wt <span class="op">=</span> <span class="va">wtw1</span><span class="op">)</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">.id</span>, <span class="va">spouse</span>, wt <span class="op">=</span> <span class="va">wtw1</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">d</span>, n <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span></span></code></pre></div>
 <p>Step 2. Get the risk set.</p>
@@ -203,43 +204,91 @@ creation of an <code>.id</code> variable)</p>
 <code class="sourceCode R"><span><span class="va">gender</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"M"</span>, <span class="st">"F"</span><span class="op">)</span></span>
 <span><span class="va">rs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/risk_set.html">risk_set</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="va">gender</span><span class="op">)</span> </span>
 <span><span class="va">rs</span></span></code></pre></div>
-<p>The risk set and the original</p>
+<p>The risk set is half the size as it should be because we are
+interested in whether there are spouses present in some of these groups
+or not.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">rs</span> <span class="op">&lt;-</span> <span class="va">rs</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>spouse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0L</span>, <span class="fl">1L</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html" class="external-link">unnest</a></span><span class="op">(</span><span class="va">spouse</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">rs</span><span class="op">)</span></span></code></pre></div>
+<p>Step 3. Remove structural zeroes (i.e., groups of size 1 with spouse
+= 1).</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">rs</span> <span class="op">&lt;-</span> <span class="va">rs</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="va">.size</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">spouse</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
+<p>Step 4. Merge the risk set with real data.</p>
+<p>The risk set has 38 structural events, but we only have 28 of them in
+our data.</p>
+<p>The idea is to merge them and have the missing values of
+<code>n</code> replaced with zeroes.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="va">rs</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">full_join</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/replace_na.html" class="external-link">replace_na</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0L</span><span class="op">)</span><span class="op">)</span> </span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">d</span>, n <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/replace_na.html" class="external-link">replace_na</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0L</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
+<p>Step 5. Add additional <code>homophily</code> and
+<code>size_one</code> variables.</p>
+<p>I also created a <code>y</code> variable that rounds up the weighted
+counts (<code>n</code>).</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>homophily <span class="op">=</span> <span class="fu">is_homophily</span><span class="op">(</span><span class="va">.id</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">ceiling</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>size_one <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">.size</span> <span class="op">==</span> <span class="fl">1L</span><span class="op">)</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="va">d</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">d</span><span class="op">$</span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/event_probs.html">event_probs</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="../reference/get_identities.html">get_identities</a></span><span class="op">(</span><span class="va">rs</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">b</span>, <span class="st">"identities_prob"</span><span class="op">)</span> <span class="co">## get_identity_probs(d, c("M", "F"))</span></span>
+<p>Step 6. Calculate event probabilities</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">d</span><span class="op">$</span><span class="va">lp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/event_probs.html">event_probs</a></span><span class="op">(</span><span class="va">d</span>, identities <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"M"</span>, <span class="st">"F"</span><span class="op">)</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">lp</span>, <span class="st">"identities_prob"</span><span class="op">)</span> </span></code></pre></div>
+<p>Step 7. The probabilities are not quite right because I have not
+taken into account the probabilities of there being a spouse or not in
+the group.</p>
+<p>I haven’t figured out a way to do this properly, but there should be
+a way to modify <code>event_probs</code> in the future to deal with
+these!</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">.size</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>lp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">unclass</a></span><span class="op">(</span><span class="va">lp</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>lp <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
+<span>    <span class="va">.size</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">~</span> <span class="va">lp</span>,</span>
+<span>    <span class="va">.size</span> <span class="op">&gt;</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">spouse</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">~</span> <span class="va">lp</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">spouse</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">*</span> <span class="va">n</span> <span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    <span class="va">.size</span> <span class="op">&gt;</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">spouse</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">~</span> <span class="va">lp</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">spouse</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="va">n</span> <span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">d</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">.size</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">d</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>expected <span class="op">=</span> <span class="va">b</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>, .by <span class="op">=</span> <span class="va">.size</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">.id</span>, <span class="va">n</span>, <span class="va">expected</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">d</span> <span class="op">|&gt;</span> <span class="co">## sanity check, all conditional probabilities should sum up to one</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span>p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="../reference/log_sum_exp.html">log_sum_exp</a></span><span class="op">(</span><span class="va">lp</span><span class="op">)</span><span class="op">)</span>, .by <span class="op">=</span> <span class="va">.size</span><span class="op">)</span> </span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="expected-counts">Expected counts<a class="anchor" aria-label="anchor" href="#expected-counts"></a>
+</h3>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">d</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>expected <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">lp</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>, .by <span class="op">=</span> <span class="va">.size</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">.id</span>, <span class="va">spouse</span>, <span class="va">y</span>, <span class="va">expected</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">spouse</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span>rowname_col <span class="op">=</span> <span class="st">".id"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/fmt_number.html" class="external-link">fmt_number</a></span><span class="op">(</span>decimals <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/opt_table_font.html" class="external-link">opt_table_font</a></span><span class="op">(</span><span class="st">"Optima"</span><span class="op">)</span> </span>
-<span></span>
-<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>homophily <span class="op">=</span> <span class="fu">is_homophily</span><span class="op">(</span><span class="va">.id</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/fmt_number.html" class="external-link">fmt_number</a></span><span class="op">(</span>decimals <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/opt_table_font.html" class="external-link">opt_table_font</a></span><span class="op">(</span><span class="st">"Optima"</span><span class="op">)</span> </span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="models-1-4">Models 1-4<a class="anchor" aria-label="anchor" href="#models-1-4"></a>
+</h3>
+<p>The following code sort-of-replicates Table 4 in <span class="citation">Ruef, Aldrich, and Carter (2003, 209)</span>. They
+account for teams of size 4 or 5 with two spouses, which adds 11 more
+structural events.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>size_category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">.size</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">mod1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">size_category</span>, data <span class="op">=</span> <span class="va">d</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">poisson</a></span><span class="op">(</span><span class="st">"log"</span><span class="op">)</span>, offset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">mod1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">size_category</span>, data <span class="op">=</span> <span class="va">d</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">poisson</a></span><span class="op">(</span><span class="st">"log"</span><span class="op">)</span>, offset <span class="op">=</span> <span class="va">lp</span><span class="op">)</span></span>
 <span><span class="va">mod2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">mod1</span>, <span class="va">y</span> <span class="op">~</span> <span class="va">.size</span><span class="op">)</span></span>
-<span><span class="va">mod3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">mod1</span>, <span class="va">y</span> <span class="op">~</span> <span class="va">size_one</span> <span class="op">+</span> <span class="va">.size</span> <span class="op">+</span> <span class="va">homophily</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<span><span class="va">mod3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">mod1</span>, <span class="va">y</span> <span class="op">~</span> <span class="va">size_one</span> <span class="op">+</span> <span class="va">.size</span> <span class="op">+</span> <span class="va">homophily</span><span class="op">)</span></span>
+<span><span class="va">mod4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">mod1</span>, <span class="va">y</span> <span class="op">~</span> <span class="va">size_one</span> <span class="op">+</span> <span class="va">.size</span> <span class="op">+</span> <span class="va">homophily</span><span class="op">*</span><span class="va">spouse</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"(Intercept)"</span> <span class="op">=</span> <span class="st">"(Intercept)"</span>,</span>
 <span>  <span class="st">".size"</span> <span class="op">=</span> <span class="st">"Team Size"</span>,</span>
@@ -248,184 +297,24 @@ creation of an <code>.id</code> variable)</p>
 <span>  <span class="st">"size_category3"</span> <span class="op">=</span> <span class="st">"Size Category [3]"</span>,</span>
 <span>  <span class="st">"size_category4"</span> <span class="op">=</span> <span class="st">"Size Category [4]"</span>,</span>
 <span>  <span class="st">"size_category5"</span> <span class="op">=</span> <span class="st">"Size Category [5]"</span>,</span>
-<span>  <span class="st">"homophily"</span> <span class="op">=</span> <span class="st">"Gender Homophily"</span></span>
+<span>  <span class="st">"homophily"</span> <span class="op">=</span> <span class="st">"Gender Homophily"</span>,</span>
+<span>  <span class="st">"homophily:spouse"</span> <span class="op">=</span> <span class="st">"Partners/spouse × \nGender Homophily"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">modelsummary</span><span class="fu">::</span><span class="fu"><a href="https://modelsummary.com/reference/msummary.html" class="external-link">msummary</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Model 1"</span> <span class="op">=</span> <span class="va">mod1</span>, <span class="st">"Model 2"</span> <span class="op">=</span> <span class="va">mod2</span>, <span class="st">"Model 3"</span> <span class="op">=</span> <span class="va">mod3</span><span class="op">)</span>, </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Model 1"</span> <span class="op">=</span> <span class="va">mod1</span>, <span class="st">"Model 2"</span> <span class="op">=</span> <span class="va">mod2</span>, <span class="st">"Model 3"</span> <span class="op">=</span> <span class="va">mod3</span>, <span class="st">"Model 4"</span> <span class="op">=</span> <span class="va">mod4</span><span class="op">)</span>, </span>
 <span>  coef_map <span class="op">=</span> <span class="va">cm</span>,</span>
 <span>  stars <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  gof_map <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nobs"</span>, <span class="st">"aic"</span>, <span class="st">"bic"</span><span class="op">)</span>,</span>
 <span>  output <span class="op">=</span> <span class="st">"gt"</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/opt_table_font.html" class="external-link">opt_table_font</a></span><span class="op">(</span><span class="st">"Optima"</span><span class="op">)</span></span></code></pre></div>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-ruef2003" class="csl-entry">
+Ruef, Martin, Howard E. Aldrich, and Nancy M. Carter. 2003. <span>“The
+Structure of Founding Teams: Homophily, Strong Ties, and Isolation Among
+US Entrepreneurs.”</span> <em>American Sociological Review</em>, 195222.
 </div>
-<div class="section level3">
-<h3 id="homophily">Homophily<a class="anchor" aria-label="anchor" href="#homophily"></a>
-</h3>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">rs</span> <span class="op">&lt;-</span> <span class="va">rs</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>spouse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0L</span>, <span class="fl">1L</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html" class="external-link">unnest</a></span><span class="op">(</span><span class="va">spouse</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">rs</span></span>
-<span></span>
-<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="va">teams</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">.id</span>, <span class="va">spouse</span>, wt <span class="op">=</span> <span class="va">wtw1</span><span class="op">)</span> </span>
-<span></span>
-<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">full_join</a></span><span class="op">(</span><span class="va">rs</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/replace_na.html" class="external-link">replace_na</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0L</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="co">## structural zero!</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="va">.size</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">spouse</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">.size</span><span class="op">)</span></span>
-<span>  </span>
-<span><span class="va">d</span></span>
-<span></span>
-<span><span class="co">## YOU ARE HERE. THE PROBLEM IS THAT YOU NEED TO Multiply the margins (as if independent). Do a simple if-else</span></span>
-<span></span>
-<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>M <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_count.html" class="external-link">str_count</a></span><span class="op">(</span><span class="va">id</span>, <span class="st">"M"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>F <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_count.html" class="external-link">str_count</a></span><span class="op">(</span><span class="va">id</span>, <span class="st">"F"</span><span class="op">)</span><span class="op">)</span> </span>
-<span></span>
-<span><span class="va">d</span></span>
-<span></span>
-<span><span class="va">probs</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span>F <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">*</span><span class="cn">F</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">*</span><span class="va">size</span><span class="op">)</span>, M <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">*</span><span class="va">M</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">*</span><span class="va">size</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">probs</span></span>
-<span></span>
-<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html" class="external-link">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Multinom.html" class="external-link">dmultinom</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">M</span>, <span class="cn">F</span><span class="op">)</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">probs</span><span class="op">[[</span><span class="st">"M"</span><span class="op">]</span><span class="op">]</span>, <span class="va">probs</span><span class="op">[[</span><span class="st">"F"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">d</span></span>
-<span></span>
-<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>homophily <span class="op">=</span> <span class="fu">is_homophily</span><span class="op">(</span><span class="va">id</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">ceiling</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>size_one <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">size</span> <span class="op">==</span> <span class="fl">1L</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>size_category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">size</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">d</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">size_category</span>, <span class="st">"label"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"Size Category"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">size</span>, <span class="st">"label"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"Team Size"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">homophily</span>, <span class="st">"label"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"Gender Homophily"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">size_one</span>, <span class="st">"label"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"Size Category[1]"</span></span>
-<span></span>
-<span><span class="va">mod4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">size_one</span> <span class="op">+</span> <span class="va">size</span> <span class="op">+</span> <span class="va">homophily</span> <span class="op">+</span> <span class="va">spouse</span><span class="op">:</span><span class="va">homophily</span>, data <span class="op">=</span> <span class="va">d</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">poisson</a></span><span class="op">(</span><span class="st">"log"</span><span class="op">)</span>, offset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">modelsummary</span><span class="fu">::</span><span class="fu"><a href="https://modelsummary.com/reference/msummary.html" class="external-link">msummary</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Model 1"</span> <span class="op">=</span> <span class="va">mod1</span>, <span class="st">"Model 2"</span> <span class="op">=</span> <span class="va">mod2</span>, <span class="st">"Model 3"</span> <span class="op">=</span> <span class="va">mod3</span>, <span class="st">"Model 4"</span> <span class="op">=</span> <span class="va">mod4</span><span class="op">)</span>,</span>
-<span>  stars <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  output <span class="op">=</span> <span class="st">"gt"</span></span>
-<span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/opt_table_font.html" class="external-link">opt_table_font</a></span><span class="op">(</span><span class="st">"Optima"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="institutional-owners">Institutional Owners<a class="anchor" aria-label="anchor" href="#institutional-owners"></a>
-</h3>
-<p>Greetings, Andres.</p>
-<p>I’m sending along the revised data set on founding teams, as
-promised.</p>
-<p>My recommendation would be that you start by working with the spouse
-indicator to try to reproduce the estimates in the ASR paper, Table 4
-(Models 4+5).</p>
-<p>Then you can try a very simple dichotomous version of the autonomy
-indicator (1 versus everything else). Eyeballing the descriptive
-statistics, I’m fairly certain that this will yield null results in
-terms of variation in gender diversity. That’s partially due to the
-restrictive sample we’re still using on this round (N=102 startups that
-have institutional backers, excluding those startups where majority
-ownership involves institutions). But it’s also a pattern that may hold
-more generally. So, it’ll be interesting to see if the models converge
-easily and how best to specify the interaction of gender diversity and
-institutional autonomy.</p>
-<p>Finally, you can play around a bit with a disaggregated version of
-the autonomy indicator. I think the real source of variation could be
-the franchises and sponsored businesses (3+4), where an existing
-organization has a serious stake in the appearance of their franchisee
-or spinoff. I’m not sure the same dynamic will hold for startups that
-simply involve banks or venture capital firms as institutional
-owners.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="va">gender</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"F"</span>, <span class="st">"M"</span><span class="op">)</span></span>
-<span><span class="va">rs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/risk_set.html">risk_set</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="va">gender</span><span class="op">)</span> </span>
-<span></span>
-<span><span class="va">rs</span> <span class="op">&lt;-</span> <span class="va">rs</span> <span class="op">|&gt;</span> <span class="co">### replace code with expand grid</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>spouse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html" class="external-link">unnest</a></span><span class="op">(</span><span class="va">spouse</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>outside_influence <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html" class="external-link">unnest</a></span><span class="op">(</span><span class="va">outside_influence</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">rs</span></span>
-<span></span>
-<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="va">teams</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>outside_influence <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">autonomy</span> <span class="op">!=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">spouse</span>, <span class="va">outside_influence</span>, wt <span class="op">=</span> <span class="va">wtw1</span><span class="op">)</span> </span>
-<span></span>
-<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">full_join</a></span><span class="op">(</span><span class="va">rs</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/replace_na.html" class="external-link">replace_na</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0L</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="va">size</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">spouse</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">size</span>, <span class="va">id</span>, <span class="va">spouse</span>, <span class="va">outside_influence</span><span class="op">)</span></span>
-<span>  </span>
-<span><span class="va">d</span></span>
-<span></span>
-<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>M <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_count.html" class="external-link">str_count</a></span><span class="op">(</span><span class="va">id</span>, <span class="st">"M"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>F <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_count.html" class="external-link">str_count</a></span><span class="op">(</span><span class="va">id</span>, <span class="st">"F"</span><span class="op">)</span><span class="op">)</span> </span>
-<span></span>
-<span><span class="va">d</span></span>
-<span></span>
-<span><span class="va">probs</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span>F <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">*</span><span class="cn">F</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">*</span><span class="va">size</span><span class="op">)</span>, M <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">*</span><span class="va">M</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">*</span><span class="va">size</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">probs</span></span>
-<span></span>
-<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html" class="external-link">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Multinom.html" class="external-link">dmultinom</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">M</span>, <span class="cn">F</span><span class="op">)</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">probs</span><span class="op">[[</span><span class="st">"M"</span><span class="op">]</span><span class="op">]</span>, <span class="va">probs</span><span class="op">[[</span><span class="st">"F"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">d</span></span>
-<span></span>
-<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>homophily <span class="op">=</span> <span class="fu">is_homophily</span><span class="op">(</span><span class="va">id</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">ceiling</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>size_one <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">size</span> <span class="op">==</span> <span class="fl">1L</span><span class="op">)</span><span class="op">)</span> </span>
-<span></span>
-<span><span class="va">d</span></span>
-<span></span>
-<span><span class="va">mod5</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span></span>
-<span>  formula <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">size_one</span> <span class="op">+</span> <span class="va">size</span> <span class="op">+</span> <span class="va">homophily</span> <span class="op">+</span> <span class="va">spouse</span> <span class="op">+</span> <span class="va">homophily</span><span class="op">:</span><span class="va">spouse</span>, </span>
-<span>  data <span class="op">=</span> <span class="va">d</span>, </span>
-<span>  family <span class="op">=</span> <span class="st">"poisson"</span>, </span>
-<span>  offset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mod5</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="va">d</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">outside_influence</span><span class="op">)</span>, <span class="va">n</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/stat_summary.html" class="external-link">stat_summary</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">d</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">outside_influence</span><span class="op">)</span>, <span class="va">n</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">size</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/stat_summary.html" class="external-link">stat_summary</a></span><span class="op">(</span>position <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html" class="external-link">position_dodge</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">d</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">n</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">outside_influence</span><span class="op">)</span>, <span class="va">n</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">size</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">id</span><span class="op">)</span>, position <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html" class="external-link">position_dodge</a></span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span>, size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">spouse</span>, labeller <span class="op">=</span> <span class="va">label_both</span><span class="op">)</span> </span>
-<span>    </span></code></pre></div>
-<p>Re-do without rounding up.</p>
-<p>Multiply the margins (as if independent).</p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
