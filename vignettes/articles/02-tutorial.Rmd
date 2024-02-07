@@ -9,8 +9,7 @@ bibliography: references.bib
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  compact = TRUE,
-  eval = FALSE
+  compact = TRUE
 )
 ```
 
@@ -199,4 +198,6 @@ modelsummary::msummary(
   output = "gt"
 ) |> gt::opt_table_font("Optima")
 ```
+
+## References 
 

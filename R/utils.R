@@ -108,7 +108,7 @@ H <- function(data, identities) {
 
 }
 
-#' Numerically stable computation of log sums of exponentiated values.
+#' Numerically stable computation of the log of the sums of exponentiated values.
 #'
 #' This helps to avoid rounding errors that occur when working with direct probabilities.
 #'

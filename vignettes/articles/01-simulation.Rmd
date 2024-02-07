@@ -134,7 +134,7 @@ mean(d$s > 0) * nrow(d)
 
 Now we are ready to see if we can recover the known parameters from the data.
 
-### Results (Missing Data) 
+### Results (Missing Data)
 
 **Results from using only groups that actually form (i.e., no zeroes).**
 
@@ -156,7 +156,7 @@ modelsummary::msummary(
 ) |> gt::opt_table_font("Avenir Next")
 ```
 
-### Results (Complete Data) 
+### Results (Complete Data)
 
 **Results from using all possible groups.**
 
@@ -226,7 +226,7 @@ mean(d$s > 0) * nrow(d)
 
 Now we are ready to see if we can recover the known parameters from the data.
 
-### Results (Missing Data) 
+### Results (Missing Data)
 
 **Results from using only groups that actually form (i.e., no zeroes).**
 
@@ -248,7 +248,7 @@ modelsummary::msummary(
 ) |> gt::opt_table_font("Avenir Next")
 ```
 
-### Results (Complete Data) 
+### Results (Complete Data)
 
 **Results from using all possible groups.**
 
@@ -326,7 +326,7 @@ mean(d$s > 0) * nrow(d)
 
 Now we are ready to see if we can recover the known parameters from the data.
 
-### Results (Missing Data) 
+### Results (Missing Data)
 
 **Results from using only groups that actually form (i.e., no zeroes).**
 
@@ -366,7 +366,7 @@ modelsummary::msummary(
 ) |> gt::opt_table_font("Avenir Next")
 ```
 
-### Results (Complete Data) 
+### Results (Complete Data)
 
 **Results from using all possible groups.**
 
