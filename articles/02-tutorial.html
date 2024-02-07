@@ -174,7 +174,23 @@ enterprise; and (4) startup sponsored by existing business.</td>
 </tbody>
 </table>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">teams</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">teams</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 816</span></span>
+<span><span class="co">#&gt; Columns: 14</span></span>
+<span><span class="co">#&gt; $ mr_id     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 2, 3, 6, 7, 13, 15, 17, 19, 22, 26, 27, 29, 33, 35, 36, 42, …</span></span>
+<span><span class="co">#&gt; $ teamtot   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …</span></span>
+<span><span class="co">#&gt; $ q217_1    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "MALE", "MALE", "MALE", "MALE", "FEMALE", "FEMALE", "MALE", …</span></span>
+<span><span class="co">#&gt; $ q217_2    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
+<span><span class="co">#&gt; $ q217_3    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
+<span><span class="co">#&gt; $ q217_4    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
+<span><span class="co">#&gt; $ q217_5    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
+<span><span class="co">#&gt; $ wtw1      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1.2024329, 0.9746501, 1.2024329, 1.2024329, 0.6153474, 0.694…</span></span>
+<span><span class="co">#&gt; $ men       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, …</span></span>
+<span><span class="co">#&gt; $ women     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, …</span></span>
+<span><span class="co">#&gt; $ allmale   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
+<span><span class="co">#&gt; $ allfemale <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
+<span><span class="co">#&gt; $ spouse    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …</span></span>
+<span><span class="co">#&gt; $ autonomy  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 3, 1, 1, 1, …</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="reshaping-data">Reshaping data<a class="anchor" aria-label="anchor" href="#reshaping-data"></a>
 </h3>
@@ -198,12 +214,66 @@ creation of an <code>.id</code> variable).</p>
 <span><span class="va">d</span> <span class="op">&lt;-</span> <span class="va">teams</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">.id</span>, <span class="va">spouse</span>, wt <span class="op">=</span> <span class="va">wtw1</span><span class="op">)</span> </span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">d</span>, n <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">d</span>, n <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 28 × 3</span></span></span>
+<span><span class="co">#&gt;    .id       spouse       n</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> F              0 166.   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> F|F            0  26.6  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> F|F|F          0   2.35 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> F|F|F|F        0   0.615</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> F|F|F|F|F      0   0.704</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> F|F|F|M        0   2.02 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> F|F|F|M        1   1.73 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> F|F|F|M|M      1   2.95 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> F|F|M          0   2.72 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> F|F|M          1   3.80 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> F|F|M|M        0   2.10 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> F|F|M|M        1   6.60 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> F|F|M|M|M      0   1.84 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> F|F|M|M|M      1   2.01 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> F|M            0  19.5  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">16</span> F|M            1 191.   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">17</span> F|M|M          0  10.7  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">18</span> F|M|M          1   6.98 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">19</span> F|M|M|M        0   2.09 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">20</span> F|M|M|M        1   7.05 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">21</span> F|M|M|M|M      0   4.26 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">22</span> F|M|M|M|M      1   1.46 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">23</span> M              0 228.   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">24</span> M|M            0  72.4  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">25</span> M|M            1   2.09 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">26</span> M|M|M          0  28.4  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">27</span> M|M|M|M        0   8.54 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">28</span> M|M|M|M|M      0  10.1</span></span></code></pre></div>
 <p>Step 2. Get the risk set.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gender</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"M"</span>, <span class="st">"F"</span><span class="op">)</span></span>
 <span><span class="va">rs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/risk_set.html">risk_set</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="va">gender</span><span class="op">)</span> </span>
-<span><span class="va">rs</span></span></code></pre></div>
+<span><span class="va">rs</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 20 × 2</span></span></span>
+<span><span class="co">#&gt;    .id       .size</span></span>
+<span><span class="co">#&gt;  <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> M             1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> F             1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> M|M           2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> F|M           2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> F|F           2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> M|M|M         3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> F|M|M         3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> F|F|M         3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> F|F|F         3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> M|M|M|M       4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> F|M|M|M       4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> F|F|M|M       4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> F|F|F|M       4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> F|F|F|F       4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> M|M|M|M|M     5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">16</span> F|M|M|M|M     5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">17</span> F|F|M|M|M     5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">18</span> F|F|F|M|M     5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">19</span> F|F|F|F|M     5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">20</span> F|F|F|F|F     5</span></span></code></pre></div>
 <p>The risk set is half the size as it should be because we are
 interested in whether there are spouses present in some of these groups
 or not.</p>
@@ -212,7 +282,12 @@ or not.</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>spouse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0L</span>, <span class="fl">1L</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html" class="external-link">unnest</a></span><span class="op">(</span><span class="va">spouse</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">rs</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">rs</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 40</span></span>
+<span><span class="co">#&gt; Columns: 3</span></span>
+<span><span class="co">#&gt; $ .id    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "M", "M", "F", "F", "M|M", "M|M", "F|M", "F|M", "F|F", "F|F", "…</span></span>
+<span><span class="co">#&gt; $ .size  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, …</span></span>
+<span><span class="co">#&gt; $ spouse <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, …</span></span></code></pre></div>
 <p>Step 3. Remove structural zeroes (i.e., groups of size 1 with spouse
 = 1).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -226,7 +301,8 @@ our data.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="va">rs</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">full_join</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/replace_na.html" class="external-link">replace_na</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0L</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/replace_na.html" class="external-link">replace_na</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0L</span><span class="op">)</span><span class="op">)</span> </span>
+<span><span class="co">#&gt; Joining with `by = join_by(.id, spouse)`</span></span></code></pre></div>
 <p>Step 5. Add additional <code>homophily</code> and
 <code>size_one</code> variables.</p>
 <p>I also created a <code>y</code> variable that rounds up the weighted
@@ -237,11 +313,27 @@ counts (<code>n</code>).</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>size_one <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">.size</span> <span class="op">==</span> <span class="fl">1L</span><span class="op">)</span><span class="op">)</span> </span>
 <span></span>
-<span><span class="va">d</span></span></code></pre></div>
+<span><span class="va">d</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 38 × 7</span></span></span>
+<span><span class="co">#&gt;    .id   .size spouse      n homophily     y size_one</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> M         1      0 228.           0   228        1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> F         1      0 166.           0   166        1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> M|M       2      0  72.4          1    72        0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> M|M       2      1   2.09         1     2        0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> F|M       2      0  19.5          0    19        0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> F|M       2      1 191.           0   191        0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> F|F       2      0  26.6          1    27        0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> F|F       2      1   0            1     0        0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> M|M|M     3      0  28.4          1    28        0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> M|M|M     3      1   0            1     0        0</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 28 more rows</span></span></span></code></pre></div>
 <p>Step 6. Calculate event probabilities</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d</span><span class="op">$</span><span class="va">lp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/event_probs.html">event_probs</a></span><span class="op">(</span><span class="va">d</span>, identities <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"M"</span>, <span class="st">"F"</span><span class="op">)</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">lp</span>, <span class="st">"identities_prob"</span><span class="op">)</span> </span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">lp</span>, <span class="st">"identities_prob"</span><span class="op">)</span> </span>
+<span><span class="co">#&gt;         M         F </span></span>
+<span><span class="co">#&gt; 0.6246938 0.3753062</span></span></code></pre></div>
 <p>Step 7. The probabilities are not quite right because I have not
 taken into account the probabilities of there being a spouse or not in
 the group.</p>
@@ -260,7 +352,15 @@ these!</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">d</span> <span class="op">|&gt;</span> <span class="co">## sanity check, all conditional probabilities should sum up to one</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span>p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="../reference/log_sum_exp.html">log_sum_exp</a></span><span class="op">(</span><span class="va">lp</span><span class="op">)</span><span class="op">)</span>, .by <span class="op">=</span> <span class="va">.size</span><span class="op">)</span> </span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span>p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="../reference/log_sum_exp.html">log_sum_exp</a></span><span class="op">(</span><span class="va">lp</span><span class="op">)</span><span class="op">)</span>, .by <span class="op">=</span> <span class="va">.size</span><span class="op">)</span> </span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 2</span></span></span>
+<span><span class="co">#&gt;   .size     p</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     1     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>     2     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>     3     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>     4     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>     5     1</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="expected-counts">Expected counts<a class="anchor" aria-label="anchor" href="#expected-counts"></a>
@@ -273,6 +373,685 @@ these!</p>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span>rowname_col <span class="op">=</span> <span class="st">".id"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/fmt_number.html" class="external-link">fmt_number</a></span><span class="op">(</span>decimals <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/opt_table_font.html" class="external-link">opt_table_font</a></span><span class="op">(</span><span class="st">"Optima"</span><span class="op">)</span> </span></code></pre></div>
+<div id="sleqpjerwg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#sleqpjerwg table {
+  font-family: Optima, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#sleqpjerwg thead, #sleqpjerwg tbody, #sleqpjerwg tfoot, #sleqpjerwg tr, #sleqpjerwg td, #sleqpjerwg th {
+  border-style: none;
+}
+
+#sleqpjerwg p {
+  margin: 0;
+  padding: 0;
+}
+
+#sleqpjerwg .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#sleqpjerwg .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#sleqpjerwg .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#sleqpjerwg .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#sleqpjerwg .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#sleqpjerwg .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sleqpjerwg .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#sleqpjerwg .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#sleqpjerwg .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#sleqpjerwg .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#sleqpjerwg .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#sleqpjerwg .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#sleqpjerwg .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#sleqpjerwg .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#sleqpjerwg .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#sleqpjerwg .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#sleqpjerwg .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#sleqpjerwg .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#sleqpjerwg .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sleqpjerwg .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#sleqpjerwg .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#sleqpjerwg .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#sleqpjerwg .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sleqpjerwg .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#sleqpjerwg .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#sleqpjerwg .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sleqpjerwg .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sleqpjerwg .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#sleqpjerwg .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sleqpjerwg .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#sleqpjerwg .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sleqpjerwg .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#sleqpjerwg .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sleqpjerwg .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#sleqpjerwg .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sleqpjerwg .gt_left {
+  text-align: left;
+}
+
+#sleqpjerwg .gt_center {
+  text-align: center;
+}
+
+#sleqpjerwg .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#sleqpjerwg .gt_font_normal {
+  font-weight: normal;
+}
+
+#sleqpjerwg .gt_font_bold {
+  font-weight: bold;
+}
+
+#sleqpjerwg .gt_font_italic {
+  font-style: italic;
+}
+
+#sleqpjerwg .gt_super {
+  font-size: 65%;
+}
+
+#sleqpjerwg .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#sleqpjerwg .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#sleqpjerwg .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#sleqpjerwg .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#sleqpjerwg .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#sleqpjerwg .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#sleqpjerwg .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead><tr class="gt_col_headings">
+<th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=""></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="spouse">spouse</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="y">y</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="expected">expected</th>
+    </tr></thead>
+<tbody class="gt_table_body">
+<tr>
+<th id="stub_1_1" scope="row" class="gt_row gt_left gt_stub">M</th>
+<td headers="stub_1_1 spouse" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_1 y" class="gt_row gt_right">228.0</td>
+<td headers="stub_1_1 expected" class="gt_row gt_right">246.1</td>
+</tr>
+<tr>
+<th id="stub_1_2" scope="row" class="gt_row gt_left gt_stub">F</th>
+<td headers="stub_1_2 spouse" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_2 y" class="gt_row gt_right">166.0</td>
+<td headers="stub_1_2 expected" class="gt_row gt_right">147.9</td>
+</tr>
+<tr>
+<th id="stub_1_3" scope="row" class="gt_row gt_left gt_stub">M|M</th>
+<td headers="stub_1_3 spouse" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_3 y" class="gt_row gt_right">72.0</td>
+<td headers="stub_1_3 expected" class="gt_row gt_right">46.2</td>
+</tr>
+<tr>
+<th id="stub_1_4" scope="row" class="gt_row gt_left gt_stub">F|M</th>
+<td headers="stub_1_4 spouse" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_4 y" class="gt_row gt_right">19.0</td>
+<td headers="stub_1_4 expected" class="gt_row gt_right">55.5</td>
+</tr>
+<tr>
+<th id="stub_1_5" scope="row" class="gt_row gt_left gt_stub">F|F</th>
+<td headers="stub_1_5 spouse" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_5 y" class="gt_row gt_right">27.0</td>
+<td headers="stub_1_5 expected" class="gt_row gt_right">16.7</td>
+</tr>
+<tr>
+<th id="stub_1_6" scope="row" class="gt_row gt_left gt_stub">M|M|M</th>
+<td headers="stub_1_6 spouse" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_6 y" class="gt_row gt_right">28.0</td>
+<td headers="stub_1_6 expected" class="gt_row gt_right">10.8</td>
+</tr>
+<tr>
+<th id="stub_1_7" scope="row" class="gt_row gt_left gt_stub">F|M|M</th>
+<td headers="stub_1_7 spouse" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_7 y" class="gt_row gt_right">11.0</td>
+<td headers="stub_1_7 expected" class="gt_row gt_right">19.4</td>
+</tr>
+<tr>
+<th id="stub_1_8" scope="row" class="gt_row gt_left gt_stub">F|F|M</th>
+<td headers="stub_1_8 spouse" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_8 y" class="gt_row gt_right">3.0</td>
+<td headers="stub_1_8 expected" class="gt_row gt_right">11.7</td>
+</tr>
+<tr>
+<th id="stub_1_9" scope="row" class="gt_row gt_left gt_stub">F|F|F</th>
+<td headers="stub_1_9 spouse" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_9 y" class="gt_row gt_right">2.0</td>
+<td headers="stub_1_9 expected" class="gt_row gt_right">2.3</td>
+</tr>
+<tr>
+<th id="stub_1_10" scope="row" class="gt_row gt_left gt_stub">M|M|M|M</th>
+<td headers="stub_1_10 spouse" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_10 y" class="gt_row gt_right">9.0</td>
+<td headers="stub_1_10 expected" class="gt_row gt_right">2.4</td>
+</tr>
+<tr>
+<th id="stub_1_11" scope="row" class="gt_row gt_left gt_stub">F|M|M|M</th>
+<td headers="stub_1_11 spouse" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_11 y" class="gt_row gt_right">2.0</td>
+<td headers="stub_1_11 expected" class="gt_row gt_right">5.9</td>
+</tr>
+<tr>
+<th id="stub_1_12" scope="row" class="gt_row gt_left gt_stub">F|F|M|M</th>
+<td headers="stub_1_12 spouse" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_12 y" class="gt_row gt_right">2.0</td>
+<td headers="stub_1_12 expected" class="gt_row gt_right">5.3</td>
+</tr>
+<tr>
+<th id="stub_1_13" scope="row" class="gt_row gt_left gt_stub">F|F|F|M</th>
+<td headers="stub_1_13 spouse" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_13 y" class="gt_row gt_right">2.0</td>
+<td headers="stub_1_13 expected" class="gt_row gt_right">2.1</td>
+</tr>
+<tr>
+<th id="stub_1_14" scope="row" class="gt_row gt_left gt_stub">F|F|F|F</th>
+<td headers="stub_1_14 spouse" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_14 y" class="gt_row gt_right">1.0</td>
+<td headers="stub_1_14 expected" class="gt_row gt_right">0.3</td>
+</tr>
+<tr>
+<th id="stub_1_15" scope="row" class="gt_row gt_left gt_stub">M|M|M|M|M</th>
+<td headers="stub_1_15 spouse" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_15 y" class="gt_row gt_right">10.0</td>
+<td headers="stub_1_15 expected" class="gt_row gt_right">1.6</td>
+</tr>
+<tr>
+<th id="stub_1_16" scope="row" class="gt_row gt_left gt_stub">F|M|M|M|M</th>
+<td headers="stub_1_16 spouse" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_16 y" class="gt_row gt_right">4.0</td>
+<td headers="stub_1_16 expected" class="gt_row gt_right">4.8</td>
+</tr>
+<tr>
+<th id="stub_1_17" scope="row" class="gt_row gt_left gt_stub">F|F|M|M|M</th>
+<td headers="stub_1_17 spouse" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_17 y" class="gt_row gt_right">2.0</td>
+<td headers="stub_1_17 expected" class="gt_row gt_right">5.7</td>
+</tr>
+<tr>
+<th id="stub_1_18" scope="row" class="gt_row gt_left gt_stub">F|F|F|M|M</th>
+<td headers="stub_1_18 spouse" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_18 y" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_18 expected" class="gt_row gt_right">3.4</td>
+</tr>
+<tr>
+<th id="stub_1_19" scope="row" class="gt_row gt_left gt_stub">F|F|F|F|M</th>
+<td headers="stub_1_19 spouse" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_19 y" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_19 expected" class="gt_row gt_right">1.0</td>
+</tr>
+<tr>
+<th id="stub_1_20" scope="row" class="gt_row gt_left gt_stub">F|F|F|F|F</th>
+<td headers="stub_1_20 spouse" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_20 y" class="gt_row gt_right">1.0</td>
+<td headers="stub_1_20 expected" class="gt_row gt_right">0.1</td>
+</tr>
+<tr>
+<th id="stub_1_21" scope="row" class="gt_row gt_left gt_stub">M|M</th>
+<td headers="stub_1_21 spouse" class="gt_row gt_right">1.0</td>
+<td headers="stub_1_21 y" class="gt_row gt_right">2.0</td>
+<td headers="stub_1_21 expected" class="gt_row gt_right">75.2</td>
+</tr>
+<tr>
+<th id="stub_1_22" scope="row" class="gt_row gt_left gt_stub">F|M</th>
+<td headers="stub_1_22 spouse" class="gt_row gt_right">1.0</td>
+<td headers="stub_1_22 y" class="gt_row gt_right">191.0</td>
+<td headers="stub_1_22 expected" class="gt_row gt_right">90.3</td>
+</tr>
+<tr>
+<th id="stub_1_23" scope="row" class="gt_row gt_left gt_stub">F|F</th>
+<td headers="stub_1_23 spouse" class="gt_row gt_right">1.0</td>
+<td headers="stub_1_23 y" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_23 expected" class="gt_row gt_right">27.1</td>
+</tr>
+<tr>
+<th id="stub_1_24" scope="row" class="gt_row gt_left gt_stub">M|M|M</th>
+<td headers="stub_1_24 spouse" class="gt_row gt_right">1.0</td>
+<td headers="stub_1_24 y" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_24 expected" class="gt_row gt_right">2.6</td>
+</tr>
+<tr>
+<th id="stub_1_25" scope="row" class="gt_row gt_left gt_stub">F|M|M</th>
+<td headers="stub_1_25 spouse" class="gt_row gt_right">1.0</td>
+<td headers="stub_1_25 y" class="gt_row gt_right">7.0</td>
+<td headers="stub_1_25 expected" class="gt_row gt_right">4.7</td>
+</tr>
+<tr>
+<th id="stub_1_26" scope="row" class="gt_row gt_left gt_stub">F|F|M</th>
+<td headers="stub_1_26 spouse" class="gt_row gt_right">1.0</td>
+<td headers="stub_1_26 y" class="gt_row gt_right">4.0</td>
+<td headers="stub_1_26 expected" class="gt_row gt_right">2.9</td>
+</tr>
+<tr>
+<th id="stub_1_27" scope="row" class="gt_row gt_left gt_stub">F|F|F</th>
+<td headers="stub_1_27 spouse" class="gt_row gt_right">1.0</td>
+<td headers="stub_1_27 y" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_27 expected" class="gt_row gt_right">0.6</td>
+</tr>
+<tr>
+<th id="stub_1_28" scope="row" class="gt_row gt_left gt_stub">M|M|M|M</th>
+<td headers="stub_1_28 spouse" class="gt_row gt_right">1.0</td>
+<td headers="stub_1_28 y" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_28 expected" class="gt_row gt_right">2.4</td>
+</tr>
+<tr>
+<th id="stub_1_29" scope="row" class="gt_row gt_left gt_stub">F|M|M|M</th>
+<td headers="stub_1_29 spouse" class="gt_row gt_right">1.0</td>
+<td headers="stub_1_29 y" class="gt_row gt_right">7.0</td>
+<td headers="stub_1_29 expected" class="gt_row gt_right">5.9</td>
+</tr>
+<tr>
+<th id="stub_1_30" scope="row" class="gt_row gt_left gt_stub">F|F|M|M</th>
+<td headers="stub_1_30 spouse" class="gt_row gt_right">1.0</td>
+<td headers="stub_1_30 y" class="gt_row gt_right">7.0</td>
+<td headers="stub_1_30 expected" class="gt_row gt_right">5.3</td>
+</tr>
+<tr>
+<th id="stub_1_31" scope="row" class="gt_row gt_left gt_stub">F|F|F|M</th>
+<td headers="stub_1_31 spouse" class="gt_row gt_right">1.0</td>
+<td headers="stub_1_31 y" class="gt_row gt_right">2.0</td>
+<td headers="stub_1_31 expected" class="gt_row gt_right">2.1</td>
+</tr>
+<tr>
+<th id="stub_1_32" scope="row" class="gt_row gt_left gt_stub">F|F|F|F</th>
+<td headers="stub_1_32 spouse" class="gt_row gt_right">1.0</td>
+<td headers="stub_1_32 y" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_32 expected" class="gt_row gt_right">0.3</td>
+</tr>
+<tr>
+<th id="stub_1_33" scope="row" class="gt_row gt_left gt_stub">M|M|M|M|M</th>
+<td headers="stub_1_33 spouse" class="gt_row gt_right">1.0</td>
+<td headers="stub_1_33 y" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_33 expected" class="gt_row gt_right">0.6</td>
+</tr>
+<tr>
+<th id="stub_1_34" scope="row" class="gt_row gt_left gt_stub">F|M|M|M|M</th>
+<td headers="stub_1_34 spouse" class="gt_row gt_right">1.0</td>
+<td headers="stub_1_34 y" class="gt_row gt_right">1.0</td>
+<td headers="stub_1_34 expected" class="gt_row gt_right">1.8</td>
+</tr>
+<tr>
+<th id="stub_1_35" scope="row" class="gt_row gt_left gt_stub">F|F|M|M|M</th>
+<td headers="stub_1_35 spouse" class="gt_row gt_right">1.0</td>
+<td headers="stub_1_35 y" class="gt_row gt_right">2.0</td>
+<td headers="stub_1_35 expected" class="gt_row gt_right">2.2</td>
+</tr>
+<tr>
+<th id="stub_1_36" scope="row" class="gt_row gt_left gt_stub">F|F|F|M|M</th>
+<td headers="stub_1_36 spouse" class="gt_row gt_right">1.0</td>
+<td headers="stub_1_36 y" class="gt_row gt_right">3.0</td>
+<td headers="stub_1_36 expected" class="gt_row gt_right">1.3</td>
+</tr>
+<tr>
+<th id="stub_1_37" scope="row" class="gt_row gt_left gt_stub">F|F|F|F|M</th>
+<td headers="stub_1_37 spouse" class="gt_row gt_right">1.0</td>
+<td headers="stub_1_37 y" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_37 expected" class="gt_row gt_right">0.4</td>
+</tr>
+<tr>
+<th id="stub_1_38" scope="row" class="gt_row gt_left gt_stub">F|F|F|F|F</th>
+<td headers="stub_1_38 spouse" class="gt_row gt_right">1.0</td>
+<td headers="stub_1_38 y" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_38 expected" class="gt_row gt_right">0.0</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="section level3">
 <h3 id="models-1-4">Models 1-4<a class="anchor" aria-label="anchor" href="#models-1-4"></a>
@@ -308,12 +1087,619 @@ structural events.</p>
 <span>  gof_map <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nobs"</span>, <span class="st">"aic"</span>, <span class="st">"bic"</span><span class="op">)</span>,</span>
 <span>  output <span class="op">=</span> <span class="st">"gt"</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/opt_table_font.html" class="external-link">opt_table_font</a></span><span class="op">(</span><span class="st">"Optima"</span><span class="op">)</span></span></code></pre></div>
+<div id="vseygwwinh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#vseygwwinh table {
+  font-family: Optima, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#vseygwwinh thead, #vseygwwinh tbody, #vseygwwinh tfoot, #vseygwwinh tr, #vseygwwinh td, #vseygwwinh th {
+  border-style: none;
+}
+
+#vseygwwinh p {
+  margin: 0;
+  padding: 0;
+}
+
+#vseygwwinh .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#vseygwwinh .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#vseygwwinh .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#vseygwwinh .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#vseygwwinh .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#vseygwwinh .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vseygwwinh .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#vseygwwinh .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#vseygwwinh .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#vseygwwinh .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#vseygwwinh .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#vseygwwinh .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#vseygwwinh .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#vseygwwinh .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#vseygwwinh .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#vseygwwinh .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#vseygwwinh .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#vseygwwinh .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#vseygwwinh .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vseygwwinh .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#vseygwwinh .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#vseygwwinh .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#vseygwwinh .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vseygwwinh .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#vseygwwinh .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#vseygwwinh .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vseygwwinh .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vseygwwinh .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#vseygwwinh .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vseygwwinh .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#vseygwwinh .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vseygwwinh .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#vseygwwinh .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vseygwwinh .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#vseygwwinh .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vseygwwinh .gt_left {
+  text-align: left;
+}
+
+#vseygwwinh .gt_center {
+  text-align: center;
+}
+
+#vseygwwinh .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#vseygwwinh .gt_font_normal {
+  font-weight: normal;
+}
+
+#vseygwwinh .gt_font_bold {
+  font-weight: bold;
+}
+
+#vseygwwinh .gt_font_italic {
+  font-style: italic;
+}
+
+#vseygwwinh .gt_super {
+  font-size: 65%;
+}
+
+#vseygwwinh .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#vseygwwinh .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#vseygwwinh .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#vseygwwinh .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#vseygwwinh .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#vseygwwinh .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#vseygwwinh .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead><tr class="gt_col_headings">
+<th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=" "> </th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Model 1">Model 1</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Model 2">Model 2</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Model 3">Model 3</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Model 4">Model 4</th>
+    </tr></thead>
+<tbody class="gt_table_body">
+<tr>
+<td headers=" " class="gt_row gt_left">(Intercept)</td>
+<td headers="Model 1" class="gt_row gt_center">5.976***</td>
+<td headers="Model 2" class="gt_row gt_center">6.883***</td>
+<td headers="Model 3" class="gt_row gt_center">8.155***</td>
+<td headers="Model 4" class="gt_row gt_center">6.804***</td>
+</tr>
+<tr>
+<td headers=" " class="gt_row gt_left"></td>
+<td headers="Model 1" class="gt_row gt_center">(0.050)</td>
+<td headers="Model 2" class="gt_row gt_center">(0.069)</td>
+<td headers="Model 3" class="gt_row gt_center">(0.187)</td>
+<td headers="Model 4" class="gt_row gt_center">(0.239)</td>
+</tr>
+<tr>
+<td headers=" " class="gt_row gt_left">Team Size</td>
+<td headers="Model 1" class="gt_row gt_center"></td>
+<td headers="Model 2" class="gt_row gt_center">-0.776***</td>
+<td headers="Model 3" class="gt_row gt_center">-1.166***</td>
+<td headers="Model 4" class="gt_row gt_center">-1.089***</td>
+</tr>
+<tr>
+<td headers=" " class="gt_row gt_left"></td>
+<td headers="Model 1" class="gt_row gt_center"></td>
+<td headers="Model 2" class="gt_row gt_center">(0.034)</td>
+<td headers="Model 3" class="gt_row gt_center">(0.069)</td>
+<td headers="Model 4" class="gt_row gt_center">(0.067)</td>
+</tr>
+<tr>
+<td headers=" " class="gt_row gt_left">Size Category [1]</td>
+<td headers="Model 1" class="gt_row gt_center"></td>
+<td headers="Model 2" class="gt_row gt_center"></td>
+<td headers="Model 3" class="gt_row gt_center">-1.013***</td>
+<td headers="Model 4" class="gt_row gt_center">0.261</td>
+</tr>
+<tr>
+<td headers=" " class="gt_row gt_left"></td>
+<td headers="Model 1" class="gt_row gt_center"></td>
+<td headers="Model 2" class="gt_row gt_center"></td>
+<td headers="Model 3" class="gt_row gt_center">(0.134)</td>
+<td headers="Model 4" class="gt_row gt_center">(0.198)</td>
+</tr>
+<tr>
+<td headers=" " class="gt_row gt_left">Size Category [2]</td>
+<td headers="Model 1" class="gt_row gt_center">-0.237**</td>
+<td headers="Model 2" class="gt_row gt_center"></td>
+<td headers="Model 3" class="gt_row gt_center"></td>
+<td headers="Model 4" class="gt_row gt_center"></td>
+</tr>
+<tr>
+<td headers=" " class="gt_row gt_left"></td>
+<td headers="Model 1" class="gt_row gt_center">(0.076)</td>
+<td headers="Model 2" class="gt_row gt_center"></td>
+<td headers="Model 3" class="gt_row gt_center"></td>
+<td headers="Model 4" class="gt_row gt_center"></td>
+</tr>
+<tr>
+<td headers=" " class="gt_row gt_left">Size Category [3]</td>
+<td headers="Model 1" class="gt_row gt_center">-1.969***</td>
+<td headers="Model 2" class="gt_row gt_center"></td>
+<td headers="Model 3" class="gt_row gt_center"></td>
+<td headers="Model 4" class="gt_row gt_center"></td>
+</tr>
+<tr>
+<td headers=" " class="gt_row gt_left"></td>
+<td headers="Model 1" class="gt_row gt_center">(0.144)</td>
+<td headers="Model 2" class="gt_row gt_center"></td>
+<td headers="Model 3" class="gt_row gt_center"></td>
+<td headers="Model 4" class="gt_row gt_center"></td>
+</tr>
+<tr>
+<td headers=" " class="gt_row gt_left">Size Category [4]</td>
+<td headers="Model 1" class="gt_row gt_center">-2.511***</td>
+<td headers="Model 2" class="gt_row gt_center"></td>
+<td headers="Model 3" class="gt_row gt_center"></td>
+<td headers="Model 4" class="gt_row gt_center"></td>
+</tr>
+<tr>
+<td headers=" " class="gt_row gt_left"></td>
+<td headers="Model 1" class="gt_row gt_center">(0.184)</td>
+<td headers="Model 2" class="gt_row gt_center"></td>
+<td headers="Model 3" class="gt_row gt_center"></td>
+<td headers="Model 4" class="gt_row gt_center"></td>
+</tr>
+<tr>
+<td headers=" " class="gt_row gt_left">Size Category [5]</td>
+<td headers="Model 1" class="gt_row gt_center">-2.841***</td>
+<td headers="Model 2" class="gt_row gt_center"></td>
+<td headers="Model 3" class="gt_row gt_center"></td>
+<td headers="Model 4" class="gt_row gt_center"></td>
+</tr>
+<tr>
+<td headers=" " class="gt_row gt_left"></td>
+<td headers="Model 1" class="gt_row gt_center">(0.214)</td>
+<td headers="Model 2" class="gt_row gt_center"></td>
+<td headers="Model 3" class="gt_row gt_center"></td>
+<td headers="Model 4" class="gt_row gt_center"></td>
+</tr>
+<tr>
+<td headers=" " class="gt_row gt_left">Gender Homophily</td>
+<td headers="Model 1" class="gt_row gt_center"></td>
+<td headers="Model 2" class="gt_row gt_center"></td>
+<td headers="Model 3" class="gt_row gt_center">-0.358***</td>
+<td headers="Model 4" class="gt_row gt_center">1.605***</td>
+</tr>
+<tr>
+<td headers=" " class="gt_row gt_left"></td>
+<td headers="Model 1" class="gt_row gt_center"></td>
+<td headers="Model 2" class="gt_row gt_center"></td>
+<td headers="Model 3" class="gt_row gt_center">(0.105)</td>
+<td headers="Model 4" class="gt_row gt_center">(0.173)</td>
+</tr>
+<tr>
+<td headers=" " class="gt_row gt_left">Partners/spouse × 
+Gender Homophily</td>
+<td headers="Model 1" class="gt_row gt_center"></td>
+<td headers="Model 2" class="gt_row gt_center"></td>
+<td headers="Model 3" class="gt_row gt_center"></td>
+<td headers="Model 4" class="gt_row gt_center">-6.233***</td>
+</tr>
+<tr>
+<td headers=" " class="gt_row gt_left" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000;"></td>
+<td headers="Model 1" class="gt_row gt_center" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000;"></td>
+<td headers="Model 2" class="gt_row gt_center" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000;"></td>
+<td headers="Model 3" class="gt_row gt_center" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000;"></td>
+<td headers="Model 4" class="gt_row gt_center" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000;">(0.730)</td>
+</tr>
+<tr>
+<td headers=" " class="gt_row gt_left">Num.Obs.</td>
+<td headers="Model 1" class="gt_row gt_center">38</td>
+<td headers="Model 2" class="gt_row gt_center">38</td>
+<td headers="Model 3" class="gt_row gt_center">38</td>
+<td headers="Model 4" class="gt_row gt_center">38</td>
+</tr>
+<tr>
+<td headers=" " class="gt_row gt_left">AIC</td>
+<td headers="Model 1" class="gt_row gt_center">543.0</td>
+<td headers="Model 2" class="gt_row gt_center">613.4</td>
+<td headers="Model 3" class="gt_row gt_center">562.1</td>
+<td headers="Model 4" class="gt_row gt_center">196.1</td>
+</tr>
+<tr>
+<td headers=" " class="gt_row gt_left">BIC</td>
+<td headers="Model 1" class="gt_row gt_center">551.2</td>
+<td headers="Model 2" class="gt_row gt_center">616.7</td>
+<td headers="Model 3" class="gt_row gt_center">568.6</td>
+<td headers="Model 4" class="gt_row gt_center">206.0</td>
+</tr>
+</tbody>
+<tfoot class="gt_sourcenotes"><tr>
+<td class="gt_sourcenote" colspan="5">+ p &lt; 0.1, * p &lt; 0.05, ** p &lt; 0.01, *** p &lt; 0.001</td>
+    </tr></tfoot>
+</table>
+</div>
+</div>
+</div>
+<div class="section level2 unnumbered">
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-ruef2003" class="csl-entry">
 Ruef, Martin, Howard E. Aldrich, and Nancy M. Carter. 2003. <span>“The
 Structure of Founding Teams: Homophily, Strong Ties, and Isolation Among
 US Entrepreneurs.”</span> <em>American Sociological Review</em>, 195222.
-</div>
 </div>
 </div>
 </div>
