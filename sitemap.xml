@@ -10,21 +10,45 @@
     <loc>https://acastroaraujo.github.io/seaR/LICENSE.html</loc>
   </url>
   <url>
+    <loc>https://acastroaraujo.github.io/seaR/articles/01-simulation.html</loc>
+  </url>
+  <url>
+    <loc>https://acastroaraujo.github.io/seaR/articles/02-tutorial.html</loc>
+  </url>
+  <url>
+    <loc>https://acastroaraujo.github.io/seaR/articles/03-definitions.html</loc>
+  </url>
+  <url>
+    <loc>https://acastroaraujo.github.io/seaR/articles/index.html</loc>
+  </url>
+  <url>
     <loc>https://acastroaraujo.github.io/seaR/authors.html</loc>
   </url>
   <url>
     <loc>https://acastroaraujo.github.io/seaR/index.html</loc>
   </url>
   <url>
+    <loc>https://acastroaraujo.github.io/seaR/reference/H.html</loc>
+  </url>
+  <url>
+    <loc>https://acastroaraujo.github.io/seaR/reference/event_probs.html</loc>
+  </url>
+  <url>
+    <loc>https://acastroaraujo.github.io/seaR/reference/get_identities.html</loc>
+  </url>
+  <url>
     <loc>https://acastroaraujo.github.io/seaR/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://acastroaraujo.github.io/seaR/reference/reexports.html</loc>
+    <loc>https://acastroaraujo.github.io/seaR/reference/log_sum_exp.html</loc>
   </url>
   <url>
     <loc>https://acastroaraujo.github.io/seaR/reference/risk_set.html</loc>
   </url>
   <url>
-    <loc>https://acastroaraujo.github.io/seaR/reference/risk_set_size.html</loc>
+    <loc>https://acastroaraujo.github.io/seaR/reference/sort_collapse.html</loc>
+  </url>
+  <url>
+    <loc>https://acastroaraujo.github.io/seaR/reference/teams.html</loc>
   </url>
 </urlset>

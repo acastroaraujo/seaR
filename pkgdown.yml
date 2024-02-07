@@ -1,8 +1,11 @@
 pandoc: 2.19.2
 pkgdown: 2.0.7
 pkgdown_sha: ~
-articles: {}
-last_built: 2023-11-30T01:18Z
+articles:
+  01-simulation: 01-simulation.html
+  02-tutorial: 02-tutorial.html
+  03-definitions: 03-definitions.html
+last_built: 2024-02-07T04:28Z
 urls:
   reference: https://acastroaraujo.github.io/seaR/reference
   article: https://acastroaraujo.github.io/seaR/articles
