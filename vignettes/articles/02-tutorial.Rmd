@@ -1,0 +1,299 @@
+---
+title: "Tutorial"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  compact = TRUE,
+  eval = FALSE
+)
+```
+
+```{r setup}
+library(seaR)
+
+# Custom Functions for this analysis
+
+is_homophily <- function(x) {
+  ## 1 if group (size > 1) is homophilous
+  ## 0 otherwise
+  out <- str_extract_all(x, pattern = "M|F")
+  as.integer(map_lgl(out, \(x) (all(x == "M") | all(x == "F")) & length(x) > 1))
+}
+```
+
+## Data
+
+| Variable    | Type      | Description                                                                                                                                                                                                                                                              |
+|---------------|---------------|------------------------------------------|
+| `mr_id`     | numeric   | unique id                                                                                                                                                                                                                                                                |
+| `teamtot`   | numeric   | number of people in the team                                                                                                                                                                                                                                             |
+| `q217_*`    | character | gender of owner; may include category of non-person which refers to institutional owners (such as banks)                                                                                                                                                                 |
+| `wtw1`      | double    | sampling weight                                                                                                                                                                                                                                                          |
+| `men`       | numeric   | count of men in team                                                                                                                                                                                                                                                     |
+| `women`     | numeric   | count of women in team                                                                                                                                                                                                                                                   |
+| `allmale`   | numeric   | indicator variable                                                                                                                                                                                                                                                       |
+| `allfemale` | numeric   | indicator variable                                                                                                                                                                                                                                                       |
+| `spouse`    | numeric   | indicator; are there any spouses/cohabiting partners among the founding team members?                                                                                                                                                                                    |
+| `autonomy`  | numeric   | An indicator which assesses the role of institutional owners and sponsors. The values are (1) no outside influence; (2) independent startup with institutional owners; (3) franchise or multilevel marketing enterprise; and (4) startup sponsored by existing business. |
+
+Origin story of the data
+
+```{r}
+dplyr::glimpse(teams)
+```
+
+### Reshaping data
+
+```{r, message=FALSE}
+library(tidyverse)
+theme_set(theme_light(base_family = "Optima"))
+```
+
+```{r}
+teams <- teams |> 
+  ## Replace gender role names with first letter (i.e., M, F, N)
+  mutate(across(starts_with("q217"), \(x) substr(x, start = 1, stop = 1))) |> 
+  ## Ignore non-persons
+  mutate(across(starts_with("q217"), \(x) ifelse(x == "N", NA, x))) |> 
+  ## Create unique SE id
+  mutate(.id = sort_collapse(q217_1, q217_2, q217_3, q217_4, q217_5)) |> 
+  ## move id variable to beginning of data frame
+  relocate(.id)
+
+d <- teams |> 
+  count(.id, allfemale, allmale, wt = wtw1) 
+
+print(d, n = Inf)
+```
+
+### Merging
+
+```{r}
+gender <- c("M", "F")
+rs <- risk_set(1:5, gender) 
+
+d <- rs |> 
+  full_join(d) |> 
+  mutate(n = replace_na(n, 0L)) 
+
+print(d, n = Inf)
+```
+
+```{r}
+d <- d |> 
+  mutate(homophily = is_homophily(.id)) |> 
+  mutate(y = ceiling(n)) |>
+  mutate(size_one = as.integer(.size == 1L)) 
+
+d
+```
+
+```{r}
+d$b <- event_probs(d, get_identities(rs))
+attr(d$b, "identities_prob") ## get_identity_probs(d, c("M", "F"))
+
+d |> 
+  group_by(.size) |> 
+  summarize(b = sum(b))
+
+d |> 
+  mutate(expected = b * sum(n), .by = .size) |> 
+  select(.id, n, expected) |> 
+  gt::gt(rowname_col = ".id") |> 
+  gt::fmt_number(decimals = 2) |> 
+  gt::opt_table_font("Optima") 
+
+d <- d |> 
+  mutate(homophily = is_homophily(.id)) |> 
+  mutate(size_category = factor(.size))
+
+mod1 <- glm(y ~ size_category, data = d, family = poisson("log"), offset = log(b))
+mod2 <- update(mod1, y ~ .size)
+mod3 <- update(mod1, y ~ size_one + .size + homophily)
+```
+
+```{r}
+cm <- c(
+  "(Intercept)" = "(Intercept)",
+  ".size" = "Team Size",
+  "size_one" = "Size Category [1]",
+  "size_category2" = "Size Category [2]",
+  "size_category3" = "Size Category [3]",
+  "size_category4" = "Size Category [4]",
+  "size_category5" = "Size Category [5]",
+  "homophily" = "Gender Homophily"
+)
+
+modelsummary::msummary(
+  list("Model 1" = mod1, "Model 2" = mod2, "Model 3" = mod3), 
+  coef_map = cm,
+  stars = TRUE,
+  output = "gt"
+) |> gt::opt_table_font("Optima")
+```
+
+### Homophily
+
+```{r, eval=FALSE}
+rs <- rs |> 
+  mutate(spouse = list(c(0L, 1L))) |> 
+  unnest(spouse)
+
+rs
+
+d <- teams |> 
+  count(.id, spouse, wt = wtw1) 
+
+d <- d |> 
+  full_join(rs) |> 
+  mutate(n = replace_na(n, 0L)) |> 
+  ## structural zero!
+  filter(!(.size == 1 & spouse == 1)) |> 
+  arrange(.size)
+  
+d
+
+## YOU ARE HERE. THE PROBLEM IS THAT YOU NEED TO Multiply the margins (as if independent). Do a simple if-else
+
+d <- d |> 
+  mutate(M = str_count(id, "M")) |> 
+  mutate(F = str_count(id, "F")) 
+
+d
+
+probs <- d |> 
+  summarize(F = sum(n*F) / sum(n*size), M = sum(n*M) / sum(n*size)) |>
+  unlist()
+
+probs
+
+d <- d |> 
+  rowwise() |> 
+  mutate(b = dmultinom(c(M, F), prob = c(probs[["M"]], probs[["F"]]))) |> 
+  ungroup()
+
+d
+
+d <- d |> 
+  mutate(homophily = is_homophily(id)) |> 
+  mutate(y = ceiling(n)) |>
+  mutate(size_one = as.integer(size == 1L)) |> 
+  mutate(size_category = factor(size))
+
+d
+
+attr(d$size_category, "label") <- "Size Category"
+attr(d$size, "label") <- "Team Size"
+attr(d$homophily, "label") <- "Gender Homophily"
+attr(d$size_one, "label") <- "Size Category[1]"
+
+mod4 <- glm(y ~ size_one + size + homophily + spouse:homophily, data = d, family = poisson("log"), offset = log(b))
+
+modelsummary::msummary(
+  list("Model 1" = mod1, "Model 2" = mod2, "Model 3" = mod3, "Model 4" = mod4),
+  stars = TRUE,
+  output = "gt"
+) |> gt::opt_table_font("Optima")
+```
+
+### Institutional Owners
+
+Greetings, Andres.
+
+I'm sending along the revised data set on founding teams, as promised.
+
+My recommendation would be that you start by working with the spouse indicator to try to reproduce the estimates in the ASR paper, Table 4 (Models 4+5).
+
+Then you can try a very simple dichotomous version of the autonomy indicator (1 versus everything else). Eyeballing the descriptive statistics, I'm fairly certain that this will yield null results in terms of variation in gender diversity. That's partially due to the restrictive sample we're still using on this round (N=102 startups that have institutional backers, excluding those startups where majority ownership involves institutions). But it's also a pattern that may hold more generally. So, it'll be interesting to see if the models converge easily and how best to specify the interaction of gender diversity and institutional autonomy.
+
+Finally, you can play around a bit with a disaggregated version of the autonomy indicator. I think the real source of variation could be the franchises and sponsored businesses (3+4), where an existing organization has a serious stake in the appearance of their franchisee or spinoff. I'm not sure the same dynamic will hold for startups that simply involve banks or venture capital firms as institutional owners.
+
+```{r, eval=FALSE}
+
+gender <- c("F", "M")
+rs <- risk_set(1:5, gender) 
+
+rs <- rs |> ### replace code with expand grid
+  mutate(spouse = list(0:1)) |> 
+  unnest(spouse) |> 
+  mutate(outside_influence = list(0:1)) |> 
+  unnest(outside_influence)
+
+rs
+
+d <- teams |> 
+  mutate(outside_influence = as.integer(autonomy != 1)) |> 
+  count(id, spouse, outside_influence, wt = wtw1) 
+
+d <- d |> 
+  full_join(rs) |> 
+  mutate(n = replace_na(n, 0L)) |> 
+  filter(!(size == 1 & spouse == 1)) |> 
+  arrange(size, id, spouse, outside_influence)
+  
+d
+
+d <- d |> 
+  mutate(M = str_count(id, "M")) |> 
+  mutate(F = str_count(id, "F")) 
+
+d
+
+probs <- d |> 
+  summarize(F = sum(n*F) / sum(n*size), M = sum(n*M) / sum(n*size)) |>
+  unlist()
+
+probs
+
+d <- d |> 
+  rowwise() |> 
+  mutate(b = dmultinom(c(M, F), prob = c(probs[["M"]], probs[["F"]]))) |> 
+  ungroup()
+
+d
+
+d <- d |> 
+  mutate(homophily = is_homophily(id)) |> 
+  mutate(y = ceiling(n)) |>
+  mutate(size_one = as.integer(size == 1L)) 
+
+d
+
+mod5 <- glm(
+  formula = y ~ size_one + size + homophily + spouse + homophily:spouse, 
+  data = d, 
+  family = "poisson", 
+  offset = log(b)
+)
+
+summary(mod5)
+```
+
+```{r, eval=FALSE}
+
+d |> 
+  ggplot(aes(as.factor(outside_influence), n)) + 
+  stat_summary()
+
+d |> 
+  ggplot(aes(as.factor(outside_influence), n, color = factor(size))) + 
+  stat_summary(position = position_dodge(width = 1/2))
+
+d |> 
+  filter(n > 0) |> 
+  ggplot(aes(as.factor(outside_influence), n, color = factor(size))) + 
+  geom_text(aes(label = id), position = position_dodge(1/2), alpha = 1/2, size = 3) +
+  scale_y_log10() + 
+  facet_wrap(~spouse, labeller = label_both) 
+    
+```
+
+Re-do without rounding up.
+
+Multiply the margins (as if independent).
+

@@ -1,10 +1,13 @@
 ^seaR\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
-^Untitled.R$
 ^references.bib$
 ^README\.Rmd$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
 ^\.github$
+^vignettes/articles$
+^data-raw$
+^Untitled.txt$
+^Untitled.R$

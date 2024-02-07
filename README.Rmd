@@ -2,7 +2,7 @@
 output: github_document
 bibliography: references.bib
 nocite: |
-  @ruef2002, @ruef2003
+  @ruef2003, @ruef2002
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# seaR
+# Structural Event Analysis <img src="man/figures/logo.png" align="right" width="50">
 
 <!-- badges: start -->
 
@@ -24,7 +24,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: end -->
 
-**Structural Event Analysis**
+The objective of structural event analysis is to model the number of groups matching some set of compositional characteristics, considering _all possible_ groups (not just those that actually form).
 
 ## Installation
 
@@ -35,29 +35,6 @@ You can install the development version of seaR from [GitHub](https://github.com
 devtools::install_github("acastroaraujo/seaR")
 ```
 
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-```{r example}
-library(seaR)
-
-gender <- c("F", "M")
-occupation <- c("P", "A", "O", "U")
-risk_set_size(1:8, gender, occupation)
-
-geography <- c("S", "N")
-risk_set_size(1:8, gender, occupation, geography)
-```
-
-And:
-
-```{r}
-grid <- risk_set(1:8, gender, occupation)
-glimpse(grid)
-
-i <- sample(nrow(grid), size = 10)
-grid[i, ]
-```
+</br></br></br></br>
 
 ## References

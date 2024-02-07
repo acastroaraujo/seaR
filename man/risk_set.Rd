@@ -2,9 +2,12 @@
 % Please edit documentation in R/utils.R
 \name{risk_set}
 \alias{risk_set}
-\title{Risk Set}
+\alias{risk_set_size}
+\title{Calculate Risk Set}
 \usage{
 risk_set(size, ..., sep = "|")
+
+risk_set_size(size, ...)
 }
 \arguments{
 \item{size}{a numeric vector}
@@ -15,7 +18,11 @@ risk_set(size, ..., sep = "|")
 }
 \value{
 a risk set data frame
+
+a vector of sizes
 }
 \description{
-Risk Set
+Calculate Risk Set
+
+Risk Set Sizes
 }

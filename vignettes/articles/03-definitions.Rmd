@@ -1,0 +1,83 @@
+---
+title: "Definitions"
+bibliography: references.bib
+csl: ajs.csl
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, message=FALSE}
+library(seaR)
+library(dplyr)
+```
+
+## Structural Event
+
+The term "structure" means *some combination* of basic actors (or identities or roles), with no strict bound on the number of those actors. The term "event" is used with the same meaning that a random event has in probability theory---i.e., some well-defined *subset* of a *sample space.*
+
+Suppose we have two gender roles (`F`, `M`), three occupational roles (`A`, `B`, `C`), and group sizes ranging from 1 to 10.
+
+**Is there an upper limit?**
+
+```{r}
+gender <- c("F", "M")
+occupation <- c("A", "B", "C")
+
+risk_set_size(1:5, gender, occupation)
+```
+
+## Risk Set
+
+The risk set $s(H)$ of a structural event enumerates all possible combinations over a set of roles $(N)$, subject to group size $(r)$ and restrictions over permissible role combinations.
+
+The number of combinations for a multiset of N roles is calculated as:
+
+$$
+s(H) = \sum_{r = 1}^{r(H)} {r + |N| -1 \choose r } = \sum_{r = 1}^{r(H)} \frac{(r + |N| -1)!}{r! (|N| -1)!}
+$$
+
+*Note. This is simply the standard way of calculating the number of possible samples of size* $r$ *out of a population of size* $|N|$*, assuming we are looking for unordered samples with replacement, and then summing over all possible values of* $r$.
+
+For example, for two gender roles (`F`, `M`) and four occupational roles (`A`, `B`, `C`, `D`), we have the following risk set:
+
+```{r}
+gender <- c("F", "M")
+occupation <- c("A", "B", "C")
+rs <- risk_set(1:2, gender, occupation)
+glimpse(rs)
+```
+
+```{r}
+tibble::deframe(rs)
+```
+
+## Structural Zeroes
+
+"If there are a priori restrictions imposed on role combinations (for instance, if women in a given society are not allowed to hold certain occupations), then the role set must be reduced accordingly" [@ruef2003, pp. 219]. We can do this by filtering the `rs` data frame.
+
+For example, if it happens to be the case that `M` is not legally allowed to have a `C` occupation:
+
+```{r}
+rs_restricted <- rs |>
+  filter(!grepl(.id, pattern = "MC"))
+  
+rs_restricted
+```
+
+## Event Probability
+
+If structural events are drawn from a population of entrepreneurs that is 40 percent manual, 30 percent service, and 30 percent professional, then the expected probability of obtaining a three member founding team with one manual worker and two service sector workers under an assumption of statistical independence is $\Pr(E \mid 3) = \frac{3!}{2! \times 1!} (.4^1 \times .3^2 \times .3^0) = .108$. The event probability reflects the fact that there are three different ways to draw the participants. By comparison, the probability of obtaining a three-member team that consists only of manual workers is $\Pr(E \mid 3) = \frac{3!}{3!} (.4^3 \times .3^0 \times .3^0) = .064$.
+
+```{r}
+probs <- c("M" = .4, "S" = .3, "P" = .3)
+
+dmultinom(x = c(1, 2, 0), prob = probs)
+dmultinom(x = c(3, 0, 0), prob = probs)
+```
+
+## Code

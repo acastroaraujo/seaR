@@ -1,4 +1,9 @@
+authors:
+  Andres Castro Araújo:
+    href: https://acastroaraujo.github.io/
+
 url: https://acastroaraujo.github.io/seaR/
+
 template:
   bootstrap: 5
   bslib:
@@ -6,3 +11,20 @@ template:
     heading_font: {google: "IM Fell DW Pica SC"}
     code_font: {google: "JetBrains Mono"}
 
+reference:
+- title: Main Functions
+  contents:
+  - risk_set
+  - risk_set_size
+  - event_probs
+
+- title: Helper Functions
+  contents:
+  - H
+  - log_sum_exp
+  - get_identities
+  - sort_collapse
+
+- title: Datasets
+  contents:
+  - teams
